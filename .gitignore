@@ -6,6 +6,10 @@ node_modules
 # Jetbrains IDE
 /.idea
 
+# Generated files
+/frontend/src/generated/
+
+# Build caches
 .nx/cache
 .nx/workspace-data
 .turbo
