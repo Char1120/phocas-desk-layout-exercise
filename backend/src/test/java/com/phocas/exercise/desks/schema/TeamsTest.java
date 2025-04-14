@@ -41,4 +41,23 @@ public class TeamsTest {
 		Assertions.assertEquals(1, teams.size());
 		Assertions.assertEquals("UpdatedTeamName", teams.getFirst().getName());
 	}
+
+	@DeskTestDatabase
+	public void testDeleteTeam(VirtualDatabase database) {
+		var context = new ApiContext(database);
+
+		// create new team
+		var teamToDelete = Team.putTeam(context, Optional.empty(), "Team To Delete");
+		var teams = Team.teams(context);
+		Assertions.assertEquals(1, teams.size());
+
+		// delete the team
+		var deletedTeam = Team.deleteTeam(context, teamToDelete.getId());
+		Assertions.assertEquals(teamToDelete.getId(), deletedTeam.getId());
+		Assertions.assertEquals(teamToDelete.getName(), deletedTeam.getName());
+
+		// verify team is deleted in database
+		teams = Team.teams(context);
+		Assertions.assertEquals(0, teams.size());
+	}
 }

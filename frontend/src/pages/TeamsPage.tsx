@@ -14,7 +14,7 @@ import {
   TextField,
 } from '@mui/material';
 import { useState } from 'react';
-import { PUT_TEAM, TEAM_QUERY } from '../queries/teams';
+import { DELETE_TEAM, PUT_TEAM, TEAM_QUERY } from '../queries/teams';
 
 export default function TeamsPage() {
   const [newTeam, setNewTeam] = useState<string>('');
@@ -38,6 +38,22 @@ export default function TeamsPage() {
       });
     },
   });
+
+  const [deleteTeam] = useMutation(DELETE_TEAM, {
+    update(cache, { data }, { variables }) {
+      let teams = cache.readQuery({ query: TEAM_QUERY })?.teams;
+
+      if (!data || !teams) {
+        return;
+      }
+      teams = teams.filter((team) => team.id !== variables?.id);
+      cache.writeQuery({
+        query: TEAM_QUERY,
+        data: { teams },
+      });
+    },
+  });
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error : {error.message}</p>;
 
@@ -48,7 +64,17 @@ export default function TeamsPage() {
     }
   };
 
-  const handleDeleteTeam = async (_teamId: string) => {};
+  const handleDeleteTeam = async (teamId: string) => {
+    if (!data?.teams) return;
+    const team = data?.teams.find((team) => team.id === teamId);
+    if (team) {
+      try {
+        await deleteTeam({ variables: { id: teamId } });
+      } catch (err: unknown) {
+        console.error('[Delete] error:', err);
+      }
+    }
+  };
 
   const handleEditTeamChange = (teamId: string, name: string) => {
     if (!data?.teams) return;
