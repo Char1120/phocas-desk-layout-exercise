@@ -51,7 +51,7 @@ export default function TeamsPage() {
   const handleDeleteTeam = async (_teamId: string) => {};
 
   const handleEditTeamChange = (teamId: string, name: string) => {
-    if (!data?.teams) return; 
+    if (!data?.teams) return;
     const team = data?.teams.find((team) => team.id === teamId);
     if (team) {
       client.cache.modify({
@@ -64,12 +64,12 @@ export default function TeamsPage() {
   };
 
   const handleSaveEdit = async (teamId: string) => {
-    if (!data?.teams) return; 
+    if (!data?.teams) return;
     const team = data?.teams.find((team) => team.id === teamId);
     if (team) {
       try {
-        const response = await putTeam({ variables: { id: teamId, name: team.name } });
-      } catch (err: any) {
+        await putTeam({ variables: { id: teamId, name: team.name } });
+      } catch (err: unknown) {
         console.error('[Save] Edit error:', err);
       }
     }
