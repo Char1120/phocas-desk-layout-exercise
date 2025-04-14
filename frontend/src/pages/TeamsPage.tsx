@@ -51,23 +51,27 @@ export default function TeamsPage() {
   const handleDeleteTeam = async (_teamId: string) => {};
 
   const handleEditTeamChange = (teamId: string, name: string) => {
-    let teams = data?.teams;
-    if (!teams) {
-      return;
+    if (!data?.teams) return; 
+    const team = data?.teams.find((team) => team.id === teamId);
+    if (team) {
+      client.cache.modify({
+        id: client.cache.identify(team),
+        fields: {
+          name: () => name,
+        },
+      });
     }
-
-    teams = teams.map((p) => (p.id === teamId ? { ...p, name } : p));
-
-    client.cache.writeQuery({
-      query: TEAM_QUERY,
-      data: { teams },
-    });
   };
 
   const handleSaveEdit = async (teamId: string) => {
+    if (!data?.teams) return; 
     const team = data?.teams.find((team) => team.id === teamId);
     if (team) {
-      await putTeam({ variables: { id: teamId, name: team.name } });
+      try {
+        const response = await putTeam({ variables: { id: teamId, name: team.name } });
+      } catch (err: any) {
+        console.error('[Save] Edit error:', err);
+      }
     }
   };
 
