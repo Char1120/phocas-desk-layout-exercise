@@ -70,7 +70,7 @@ export default function TeamsPage() {
     if (team) {
       try {
         await deleteTeam({ variables: { id: teamId } });
-      } catch (err: unknown) {
+      } catch (err) {
         console.error('[Delete] error:', err);
       }
     }
@@ -95,7 +95,7 @@ export default function TeamsPage() {
     if (team) {
       try {
         await putTeam({ variables: { id: teamId, name: team.name } });
-      } catch (err: unknown) {
+      } catch (err) {
         console.error('[Save] Edit error:', err);
       }
     }
