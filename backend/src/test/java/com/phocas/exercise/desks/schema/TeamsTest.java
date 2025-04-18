@@ -24,18 +24,18 @@ public class TeamsTest {
 	@DeskTestDatabase
 	public void testUpdateTeam(VirtualDatabase database) {
 		var context = new ApiContext(database);
-		
+
 		// create new team
 		var originalTeam = Team.putTeam(context, Optional.empty(), "OriginalTeamName");
 		var teams = Team.teams(context);
 		Assertions.assertEquals(1, teams.size());
 		Assertions.assertEquals("OriginalTeamName", originalTeam.getName());
-		
+
 		// update team name
 		var updatedTeam = Team.putTeam(context, Optional.of(originalTeam.getId()), "UpdatedTeamName");
 		Assertions.assertEquals(originalTeam.getId(), updatedTeam.getId());
 		Assertions.assertEquals("UpdatedTeamName", updatedTeam.getName());
-		
+
 		// verify updated team name in database
 		teams = Team.teams(context);
 		Assertions.assertEquals(1, teams.size());
